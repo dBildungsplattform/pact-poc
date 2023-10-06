@@ -1,8 +1,8 @@
 import {Consumer} from "./consumer";
 import * as path from "path";
 import {Interaction, Pact} from "@pact-foundation/pact";
-import {eachLike, like} from "@pact-foundation/pact/src/dsl/matchers";
-import {number} from "@pact-foundation/pact/src/v3/matchers";
+import {integer, like} from "@pact-foundation/pact/src/dsl/matchers";
+import {AxiosPromise} from "axios";
 
 
 describe('The Consumer API', () => {
@@ -21,7 +21,7 @@ describe('The Consumer API', () => {
     const userExample = {id:1, name: 'Max', password: 'secret'};
     const EXPECTED_BODY = like(userExample);
     const expBody = {
-        id: number(23),
+        id: integer(23),
         name: like('h'),
         password: like('p')
     }
@@ -58,7 +58,6 @@ describe('The Consumer API', () => {
                     },
                     body: EXPECTED_BODY,
                 });
-
             return provider.addInteraction(interaction);
         });
 
@@ -73,6 +72,36 @@ describe('The Consumer API', () => {
         it('returns the correct response', async () => {
             expect((await consumer.getUser(1))).toStrictEqual(userExample);
         });
+    });
+
+    describe('get /user?:id 2', () => {
+        beforeAll(() => {
+            const interaction = new Interaction()
+                .given('the requested user is not existing')
+                .uponReceiving('a request for a user with specific id')
+                .withRequest({
+                    method: 'GET',
+                    path: '/user',
+                    headers: {
+                        Accept: 'application/json',
+                    },
+                    query: {
+                        id: '5'
+                    },
+                })
+                .willRespondWith({
+                    status: 404
+                });
+            return provider.addInteraction(interaction);
+        });
+
+        it('returns a 404 error', async () => {
+            await consumer.getUserAsAxiosPromise(5).then(res => {
+                console.log(res.status);
+                expect(res.status).toStrictEqual(404);
+            })
+        });
+
     });
 
 })

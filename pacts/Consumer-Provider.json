@@ -30,6 +30,61 @@
         },
         "status": 200
       }
+    },
+    {
+      "description": "a request for a user with specific id will return a Result",
+      "providerState": "I have a list of users",
+      "request": {
+        "headers": {
+          "Accept": "application/json"
+        },
+        "method": "GET",
+        "path": "/user",
+        "query": "id=1"
+      },
+      "response": {
+        "body": {
+          "ok": true,
+          "value": {
+            "id": 1,
+            "name": "Vorname",
+            "password": "Password"
+          }
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "matchingRules": {
+          "$.body.ok": {
+            "match": "type"
+          },
+          "$.body.value.id": {
+            "match": "type"
+          },
+          "$.body.value.name": {
+            "match": "type"
+          },
+          "$.body.value.password": {
+            "match": "type"
+          }
+        },
+        "status": 200
+      }
+    },
+    {
+      "description": "a request for a user with specific id",
+      "providerState": "the requested user is not existing",
+      "request": {
+        "headers": {
+          "Accept": "application/json"
+        },
+        "method": "GET",
+        "path": "/user",
+        "query": "id=5"
+      },
+      "response": {
+        "status": 404
+      }
     }
   ],
   "metadata": {

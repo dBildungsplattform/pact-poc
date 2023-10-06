@@ -1,6 +1,5 @@
 import axios, {AxiosPromise} from "axios";
 
-
 export interface User {
     id: number;
     name: string;
@@ -16,7 +15,8 @@ export class Consumer {
         this.port = endpoint.port;
     }
 
-    public getUserOld(id: number): AxiosPromise {
+    // This is not used but kept for presentation purposes
+    public getUserViaRequest(id: number): AxiosPromise {
         return axios.request({
             baseURL: `${this.url}:${this.port}`,
             headers: {Accept: 'application/json'},
@@ -27,7 +27,10 @@ export class Consumer {
 
     public async getUser(id: number): Promise<User> {
         let axiosResponse = await axios.get<User>(`${this.url}:${this.port}/user?id=${id}`, {headers: {Accept: 'application/json'}});
-        console.log(axiosResponse.data);
         return axiosResponse.data;
+    }
+
+    public async getUserAsAxiosPromise(id: number): AxiosPromise {
+        return axios.get<User>(`${this.url}:${this.port}/user?id=${id}`, {headers: {Accept: 'application/json'}});
     }
 }
