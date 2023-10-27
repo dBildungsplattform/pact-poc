@@ -6,6 +6,12 @@ export interface User {
     password: string;
 }
 
+export class UserClass implements User {
+    id: number;
+    name: string;
+    password: string;
+}
+
 export class Consumer {
     private readonly url: string;
     private readonly port: number;
@@ -26,11 +32,18 @@ export class Consumer {
     }
 
     public async getUser(id: number): Promise<User> {
-        let axiosResponse = await axios.get<User>(`${this.url}:${this.port}/user?id=${id}`, {headers: {Accept: 'application/json'}});
+        let axiosResponse = await axios.get<User>(
+            `${this.url}:${this.port}/user?id=${id}`,
+            {headers: {Accept: 'application/json'}});
         return axiosResponse.data;
     }
 
     public async getUserAsAxiosPromise(id: number): AxiosPromise {
         return axios.get<User>(`${this.url}:${this.port}/user?id=${id}`, {headers: {Accept: 'application/json'}});
+    }
+
+    public async createUser(name: string, password: string): Promise<number> {
+        let axiosResponse = await axios.post<number>(`${this.url}:${this.port}/user?name=${name}&password=${password}`, {}, {headers: {Accept: 'text/plain', 'Content-Type': 'razor'}});
+        return axiosResponse.data;
     }
 }

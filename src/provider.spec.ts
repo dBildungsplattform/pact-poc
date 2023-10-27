@@ -23,8 +23,6 @@ describe('Pact Verification', () => {
     })
 
     it('validates the expectations of Matching Service', async () => {
-        let token = 'INVALID TOKEN';
-
         const output = await new Verifier({
             provider: 'Provider',
             providerBaseUrl: 'http://localhost:8081',
@@ -36,6 +34,9 @@ describe('Pact Verification', () => {
             ],
             stateHandlers: {
                 'I have a list of users': () => {
+                    return Promise.resolve();
+                },
+                'the requested user is not existing': () => {
                     return Promise.resolve();
                 }
             }

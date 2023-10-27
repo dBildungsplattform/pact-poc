@@ -6,7 +6,7 @@ export class UserRepo {
     public constructor() {
     }
 
-    public findUser(id: number) {
+    public findUser(id: number): User {
         return this.userList.find((user) => user.id == id);
     }
 
